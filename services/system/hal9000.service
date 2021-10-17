@@ -1,0 +1,14 @@
+[Unit]
+Description = Otis Discord Bot
+After = network.target 
+ 
+[Service]
+Type = simple
+WorkingDirectory=/media/pi/t4dzi0/Python
+ExecStart = /usr/bin/python3 /media/pi/t4dzi0/Python/TadzioBot.py
+Restart = on-failure 
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target

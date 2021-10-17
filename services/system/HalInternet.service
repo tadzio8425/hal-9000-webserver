@@ -1,0 +1,13 @@
+[Unit]
+Description = Index LocalTunnel
+After = network.target 
+ 
+[Service]
+Type = simple
+ExecStart = lt --port 80 --subdomain hal9000-server
+Restart = on-failure 
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target 

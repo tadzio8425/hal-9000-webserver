@@ -1,0 +1,13 @@
+[Unit]
+Description = Portainer LocalTunnel
+After = network.target 
+ 
+[Service]
+Type = simple
+ExecStart = lt --port 9000 --subdomain hal9000-server-portainer
+Restart = on-failure 
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target 

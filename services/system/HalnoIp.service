@@ -1,0 +1,12 @@
+[Unit]
+Description = Automatic Local IP DNS Setter
+After = network.target  
+[Service]
+Type = simple
+ExecStart =/usr/bin/python3 /home/pi/Active-Services/scripts/noIp.py
+Restart = on-failure
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target 

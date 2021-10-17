@@ -1,0 +1,13 @@
+[Unit]
+Description = Radarr LocalTunnel
+After = network.target 
+ 
+[Service]
+Type = simple
+ExecStart = lt --port 7878 --subdomain hal9000-server-radarr
+Restart = on-failure 
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target

@@ -1,0 +1,13 @@
+[Unit]
+Description = Hal Java Voice Commands
+After = network.target 
+ 
+[Service]
+Type = simple
+ExecStart = /usr/bin/java -jar /home/pi/Active-Services/scripts/Hal.jar
+Restart = on-failure 
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target 
