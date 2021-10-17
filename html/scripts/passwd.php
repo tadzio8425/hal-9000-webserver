@@ -1,6 +1,6 @@
 <?php
 
-if ($_POST['passwd'] == "otis"){
+if ($_POST['passwd'] == "PASSWORD"){
     echo "Ingreso Exitoso!";
  
 
