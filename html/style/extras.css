@@ -1,0 +1,19 @@
+section#ssh-section{
+    overflow: auto;
+    height: 130px;
+    width: 500px;
+    transform:translateX(-50%);
+    left:50%;
+}
+
+section#ssh-section h2{
+    font-size: 20px;
+    width: 200px;
+    margin-bottom: 15px;
+}
+
+section#ssh-section p{
+    margin: 0px auto;
+    text-align: center;
+    font-size: 35px;
+}

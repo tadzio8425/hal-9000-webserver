@@ -7,11 +7,20 @@
 
           <!-- add icon link -->
           <link rel = "icon" href = "./sources/hal9000_logo.png" type = "image/x-icon">
+          <link rel="apple-touch-icon" href="./sources/hal9000_logo_red.png">
 
           <!-- add stylesheet link -->
-          <link href="./style/stylee.css" rel="stylesheet" type="text/css">
+          <link href="./style/style2.css" rel="stylesheet" type="text/css">
           <!--JavaScript File link-A-->
           <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.js"></script>
+          <script type="text/javascript" src="./scripts/interaction2.js" defer></script>
+          <script type="text/javascript" src="./scripts/smoothscroll-polyfill.js" defer></script>
+
+
+          <!--Fonts!-->
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap" rel="stylesheet">
 
         <!--Metadata--> 
           <meta property="og:site_name" content="Hal-9000">
@@ -20,6 +29,8 @@
           <meta property="og:image" itemprop="image" content="https://images-ext-1.discordapp.net/external/WEI4P17riS_R98taKAYOE3QmKU_ZVAcNKlOYn7nooGg/https/img.pngio.com/hal-icon-65700-free-icons-library-hal-png-1600_1600.jpg?width=256&height=256">
           <meta property="og:type" content="website" />
           <meta property="og:updated_time" content="1440432930" />
+
+          <meta content="width=device-width, initial-scale=1" name="viewport" />
 
           <script>
 
@@ -76,7 +87,13 @@
 
             }
 
+            else if(serviceName=="jackett"){
+                     serviceId = "jackett";
+                     dockerService="true";
 
+            }
+
+            if(passwd !== null){
             $.ajax(
                 {
                     type: "POST",
@@ -87,7 +104,7 @@
                         console.log(data);
                         location.reload();
                     }
-                });
+                });};
 
 
 
@@ -108,15 +125,22 @@
             
 
             <nav>
+
+                
+
                 <!--HAL IMAGE-->
                 <div class="top-header">
+
+                    <img class = "three-line-button" id="hamburguer" src="./sources/three-horizontal-lines.svg" alt="Three line mobile menu">
+
                     <img src = "./sources/hal9000_logo.png" alt="Hal-9000">
                     <!--SECRET BLUE HAL IMAGE-->
                     <img class = "secret" src = "./sources/hal9000_bluelogo.png" alt="Hal-9000">
 
                     <h1>Hal-9000</h1>
-                </div>
 
+
+                </div>
 
 
                 <div id="left-nav">
@@ -128,7 +152,7 @@
                 <div id="right-nav">
                 <ul>
                     <li><a href = "https://hal9000-server-radarr.loca.lt/" target="_blank">Radarr</a></li>
-                    <li><a>Extras</a></li>
+                    <li><a href = "./extras.php">Extras</a></li>
                 </ul></div>
 
 
@@ -136,6 +160,18 @@
             </nav>
 
         </header>
+
+
+        <!--Hidden Mobile Menu-->
+        <div class = "fade-menu" id = "mobile-menu">
+            <nav>
+                <h2 id="service-status-button">Service Status</h2>
+                <h2 id="media-board-button">Media Board</h2>
+                <h2 id="feed-button">Feed</h2>
+            </nav>
+        </div>
+
+
 
         <main>
 
@@ -238,21 +274,65 @@
                     putenv('PATH=/usr/bin');
                     endif;
                 ?>
+
+                <!--Jackett-->
+                <?php
+                    $jackett_status = shell_exec('docker inspect jackett --format "{{.State.Running}}"');
+                    $jackett_status = preg_replace('/[\x00-\x1F\x7F]/', '', $jackett_status);
+                    if (strcmp($jackett_status, "true") == 0):
+                        { ?>
+                            <img onclick="promptPassword('active','jackett')" class = "service-button" id="jackett-button-activo" src="./sources/Jackett activo.svg" alt="Jackett logo and service activation">
+                            <?php }
+                    else:
+                        { ?>
+                         <img onclick="promptPassword('inactive','jackett')" class = "service-button" id="jackett-button-inactivo" src="./sources/Jackett inactivo.svg" alt="Jackett logo and service activation">
+                        <?php }
+                    putenv('PATH=/usr/bin');
+                    endif;
+
+                ?>
+
                 
                 </section>
 
             <section id="centered-section">
                 <h2>Media Board</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin accumsan orci at quam laoreet tincidunt. In nunc purus, tempor eget gravida vel, sagittis in felis. Vestibulum vel euismod est, eget eleifend nisi. Donec posuere malesuada risus a facilisis. Sed faucibus sapien quis orci maximus, a tincidunt sem pharetra. Pellentesque lobortis nisi nec elit posuere, eget eleifend lectus sagittis. Nullam sed lorem turpis. Sed vulputate aliquam purus, id euismod lorem porta et. Nunc in feugiat metus, quis bibendum leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam non lacus vel magna consectetur condimentum.
 
-                    In ut massa ut enim gravida accumsan vel in ex. Morbi consequat ultricies scelerisque. Integer lobortis pretium elit, id pretium lectus hendrerit nec. Curabitur dolor dolor, porttitor sit amet nunc quis, bibendum ornare justo. Curabitur lobortis diam sit amet felis sagittis vulputate. Suspendisse cursus, nunc sed fermentum placerat, lacus metus consequat purus, sed faucibus nisl lacus sed justo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Maecenas rutrum, urna eget pharetra facilisis, dolor dui congue est, eu consectetur magna ex in urna.
+                <!--Song of the day!-->
+                <div class = "sub-section" id="song-spotlight">
+
+                <?php
+                    $command = escapeshellcmd("python3 scripts/SpotlightSong/SpotlightSong.py");
+                    $song_code = shell_exec($command);
+
+                    {?>
+                    <iframe src="https://open.spotify.com/embed/track/<?php echo $song_code ?>" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    <?php }
                     
-                    Morbi eros sapien, bibendum sit amet tellus vel, viverra ullamcorper diam. Donec non tellus a ex sagittis laoreet. Nam suscipit finibus ex quis molestie. Vivamus convallis id leo sed lobortis. Donec arcu libero, fermentum id tempor et, finibus pretium nisi. Curabitur tincidunt, magna id consequat tristique, ante mauris scelerisque odio, quis euismod leo arcu id ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus a nisl sagittis, sollicitudin ante eu, consequat massa. Nulla eleifend viverra arcu et commodo. Sed varius nibh leo, non dictum enim aliquam non. Vestibulum a consequat ante, sed tristique risus. Vivamus imperdiet enim eros. Aenean maximus diam vehicula euismod pretium. Etiam varius elit et ex porta, pretium malesuada erat venenatis. Sed quis erat auctor, eleifend nulla sit amet, faucibus turpis. Etiam luctus rhoncus erat, tempus cursus dui.
-                    
-                    Aenean euismod dapibus tellus ut pulvinar. Donec faucibus tincidunt rutrum. Cras pellentesque justo at elit ultricies, in bibendum felis pulvinar. Cras lectus felis, tincidunt at tortor a, consectetur semper metus. Curabitur fringilla bibendum orci, a varius arcu sagittis quis. Integer nec leo ac nunc feugiat accumsan. Nunc non facilisis nulla. Duis at nibh ac felis rutrum vestibulum. Curabitur et euismod velit. Ut auctor turpis eu nisi congue, a accumsan erat egestas. Donec at consequat nisl. Vivamus nec metus dictum, pretium turpis non, faucibus mi. Quisque tempus justo vitae viverra feugiat. Praesent interdum erat purus, ac placerat neque faucibus id. Donec in neque a mauris aliquam pulvinar id ac massa. In ac fringilla nibh.
-                    
-                    Curabitur faucibus, erat sit amet maximus cursus, tellus risus dignissim est, a accumsan velit enim ut augue. Vivamus a est a est ullamcorper feugiat. Nullam ultrices justo massa, efficitur accumsan nisi dapibus eget. Curabitur ullamcorper in eros ut tempor. Nulla non purus vel quam sodales ultrices. Fusce non ipsum arcu. Morbi volutpat est tortor, eu ultricies tortor commodo vitae. Integer a tristique nulla. Praesent sollicitudin enim vulputate, suscipit purus quis, laoreet est. Aliquam eu nulla vitae est feugiat imperdiet. Vestibulum nisl urna, pellentesque ac felis finibus, maximus placerat magna. Ut eleifend turpis at ante tincidunt, sed tincidunt nibh ornare. Nunc sit amet est vel dui laoreet pulvinar non ut arcu. In sodales semper sapien, in vulputate elit tempor et.</p>
-            
+                ?>
+
+                </div>
+
+                
+                <!--Frame of the day!-->
+                <div class = "sub-section" id="frame">
+                    <img src="./sources/frameOfTheDay/frameOfTheDay.jpg"/>
+                </div>
+
+                <div class = "sub-title">
+                <?php
+
+                $handle = fopen("./sources/frameOfTheDay/frameInfo.csv", "r");
+                $csv = fgetcsv($handle);
+                $csv = fgetcsv($handle);
+                $film_title = $csv[0];
+
+                {?>
+                    <p> <?php echo $film_title ?> </p>
+                    <?php }
+
+                ?>
+                </div>
 
 
             </section>
